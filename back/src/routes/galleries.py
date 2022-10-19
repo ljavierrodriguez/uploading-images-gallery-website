@@ -22,7 +22,7 @@ def galleries():
           galleries = list(map(lambda imagen: imagen.serialize(), galleries))
           return jsonify(galleries), 200
 
-    if request.method == 'POST':
+    """ if request.method == 'POST':
         
         title = request.form['title']
         active = request.form['active']
@@ -38,19 +38,21 @@ def galleries():
         gallery_image.filename = resp['secure_url']
         gallery_image.save()
 
-        return jsonify(gallery_image.serialize()), 200
+        return jsonify(gallery_image.serialize()), 200 """
 
 
-    """ if request.method == 'POST':
+    if request.method == 'POST':
         
         title = request.form['title']
         active = request.form['active']
-        images = request.files['images']
+        images = request.files.getlist("images")
 
         print(images)
         data = []
 
         for image in images:
+
+          print(image)
 
           resp = cloudinary.uploader.upload(image, folder="gallery")
 
@@ -64,7 +66,7 @@ def galleries():
 
           data.append(gallery_image.serialize())
 
-        return jsonify(data.serialize()), 200 """
+        return jsonify(data), 200
 
 
 @bpGI.route('/galleries/<int:id>', methods=['PUT'])

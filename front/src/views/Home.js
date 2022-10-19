@@ -46,7 +46,11 @@ export default function Home() {
 
             formData.append('title', title);
             formData.append('active', active);
-            formData.append('image', image);
+            for(let i = 0; i < image.length; i++){
+                formData.append('images', image[i]);
+            }
+
+            console.log(formData);
 
             uploadImage(formData);
 
@@ -65,8 +69,8 @@ export default function Home() {
             })
             const data = await response.json();
 
-            if (data.id) {
-                getImagesGallery();
+            if (data.length > 0) {
+                getImagesGallery(filter);
                 setTitle("");
                 setActive(true);
                 setImage(null);
@@ -205,7 +209,7 @@ export default function Home() {
                         </div>
                         <div className="mb-3">
                             <label htmlFor="image" className="form-label">File</label>
-                            <input type="file" className="form-control" id="image" name="image" onChange={e => setImage(e.target.files[0])} />
+                            <input type="file" className="form-control" id="image" name="image" onChange={e => setImage(e.target.files)} multiple />
                         </div>
                         <div className="d-grid">
                             <button className="btn btn-primary btn-sm gap-2">
