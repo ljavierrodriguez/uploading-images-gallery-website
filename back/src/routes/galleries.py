@@ -9,11 +9,18 @@ bpGI = Blueprint('bpGI', __name__)
 def galleries():
 
     if request.method == 'GET':
-        
-        galleries = Gallery.query.all()
-        galleries = list(map(lambda imagen: imagen.serialize(), galleries))
 
-        return jsonify(galleries), 200
+        active =  request.args.get('active')
+        if active is not None:
+          status = True if active == 'true' else False
+          galleries = Gallery.query.filter_by(active=status)
+          galleries = list(map(lambda imagen: imagen.serialize(), galleries))
+          return jsonify(galleries), 200
+
+        else:
+          galleries = Gallery.query.all()
+          galleries = list(map(lambda imagen: imagen.serialize(), galleries))
+          return jsonify(galleries), 200
 
     if request.method == 'POST':
         
@@ -30,6 +37,18 @@ def galleries():
         gallery_image.active = True if active == 'true' else False
         gallery_image.filename = resp['secure_url']
         gallery_image.save()
+
+        return jsonify(gallery_image.serialize()), 200
+
+
+@bpGI.route('/galleries/<int:id>', methods=['PUT'])
+def galleries_update_active(id):
+
+        active = request.json.get('active')
+
+        gallery_image = Gallery.query.get(id)
+        gallery_image.active = active
+        gallery_image.update()
 
         return jsonify(gallery_image.serialize()), 200
 
